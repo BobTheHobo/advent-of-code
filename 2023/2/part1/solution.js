@@ -23,52 +23,63 @@ function countInstances(inputArr) {
     var totalGameSum = 0;
     var currentGame = 1;
     inputArr.forEach(line => {
-        const game = line.split(": ")[1].trim()
-        const chars = game.split("")
-        var red = 0;
-        var blue = 0;
-        var green = 0;
+        const game = line.split(": ")[1]
+        const sets = game.split("; ")
 
-        var i = 0;
         var validGame = true;
-        while(i<chars.length && validGame){
-            var char = chars[i]
-            if(char !== " ") {
-                if(!isNaN(char/1)){
-                    colorNumber = char/1;                    
-                }else{
-                    if(char == "r") {
-                       red+=colorNumber 
-                       if(red>12){
-                            validGame = false;
-                       }
-                       i+=4;
-                    }
-                    if(char == "g") {
-                        green+=colorNumber;
-                       if(green>13){
-                            validGame = false;
-                       }
-                       i+=6;
-                    }
-                    if(char == "b") {
-                        blue+=colorNumber;
-                       if(blue>14){
-                            validGame = false;
-                       }
-                       i+=5;
+        sets.forEach(set => {
+            const chars = set.split("")            
+            var red = 0;
+            var blue = 0;
+            var green = 0;
+
+            var i = 0;
+            var colorNumber = 0;
+            while(i<chars.length && validGame){
+                var char = chars[i]
+                if(char !== " ") {
+                    if(!isNaN(char/1)){
+                        const num = char/1;
+                        if(colorNumber==0) {
+                            colorNumber = num
+                        }else{
+                            colorNumber = colorNumber*10+num
+                        }
+                    }else{
+                        if(char == "r") {
+                            red+=colorNumber 
+                            if(red>12){
+                                validGame = false;
+                            }
+                            i+=4;
+                        }
+                        if(char == "g") {
+                            green+=colorNumber;
+                            if(green>13){
+                                    validGame = false;
+                            }
+                            i+=6;
+                        }
+                        if(char == "b") {
+                            blue+=colorNumber;
+                            if(blue>14){
+                                    validGame = false;
+                            }
+                            i+=5;
+                        }
+                        colorNumber = 0;
                     }
                 }
+                i++; 
             }
-            i++; 
-        }
+            console.log("red: "+red)
+            console.log("green: "+green)
+            console.log("blue: "+blue)
+        })
         if(validGame){
             totalGameSum+=currentGame
             validGame = false
         }
-        console.log("red: "+red)
-        console.log("green: "+green)
-        console.log("blue: "+blue)
         console.log("currentGame: "+currentGame)
         console.log("totalGame: "+totalGameSum)
         currentGame++;
