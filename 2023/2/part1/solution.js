@@ -8,83 +8,69 @@ const testcases =  [
     "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green", 
 ]
 
-test()
-// main(inputToList())
-
+// test()
+main(inputToList())
 
 function test() {
     main(testcases)
 }
 
 function main(input) {
-    input.forEach(line => {
-        const split = splitInput(line)
-        countInstances(split);
-        
-    });
-}
-
-function splitInput(input) {
-    const removeGameNum = input.split(":")[1]
-    const splitIntoPulls = removeGameNum.split(";")
-    return splitIntoPulls
+    countInstances(input)
 }
 
 function countInstances(inputArr) {
-    var blue = 0;
-    var green = 0;
-    var red = 0;
-    var currentIteration = 0;
-    var totalNum = 0;
-    var currentNum = 0;
-    var addCurrent = true;
-    inputArr.forEach(pull => {
-        const chars = pull.split("")
+    var totalGameSum = 0;
+    var currentGame = 1;
+    inputArr.forEach(line => {
+        const game = line.split(": ")[1].trim()
+        const chars = game.split("")
+        var red = 0;
+        var blue = 0;
+        var green = 0;
+
         var i = 0;
-        var count = 0;
-        console.log(chars)
-        while(i<chars.length) {
+        var validGame = true;
+        while(i<chars.length && validGame){
             var char = chars[i]
-            if(!isNaN(char/1) && char !== " ") {
-                count = char/1;
-                console.log(count)
-            }else if(char !== " "){
-                switch(char) {
-                    case "g":
-                        green+=count;
-                        console.log("green: " + green)
-                        if(green > 13) {
-                            i = chars.length;
-                            addCurrent = false;
-                        }
-                        i+=7;
-                        break;
-                    case "r":
-                        red+=count;
-                        if(red > 13) {
-                            i = chars.length;
-                            addCurrent = false;
-                        }
-                        i+=5;
-                        break;
-                    case "b":
-                        blue+=count;
-                        if(blue > 13) {
-                            i = chars.length;
-                            addCurrent = false;
-                        }
-                        i+=6;
-                        break;
-                    default:
-                        break;
+            if(char !== " ") {
+                if(!isNaN(char/1)){
+                    colorNumber = char/1;                    
+                }else{
+                    if(char == "r") {
+                       red+=colorNumber 
+                       if(red>12){
+                            validGame = false;
+                       }
+                       i+=4;
+                    }
+                    if(char == "g") {
+                        green+=colorNumber;
+                       if(green>13){
+                            validGame = false;
+                       }
+                       i+=6;
+                    }
+                    if(char == "b") {
+                        blue+=colorNumber;
+                       if(blue>14){
+                            validGame = false;
+                       }
+                       i+=5;
+                    }
                 }
             }
-            i++;
+            i++; 
         }
-        currentNum+=1;
-        if(addCurrent){
-            totalNum += currentNum;
-            addCurrent = true;
+        if(validGame){
+            totalGameSum+=currentGame
+            validGame = false
         }
+        console.log("red: "+red)
+        console.log("green: "+green)
+        console.log("blue: "+blue)
+        console.log("currentGame: "+currentGame)
+        console.log("totalGame: "+totalGameSum)
+        currentGame++;
     })
 }
