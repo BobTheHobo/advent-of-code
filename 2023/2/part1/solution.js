@@ -72,16 +72,16 @@ function countInstances(inputArr) {
                 }
                 i++; 
             }
-            console.log("red: "+red)
-            console.log("green: "+green)
-            console.log("blue: "+blue)
+            // console.log("red: "+red)
+            // console.log("green: "+green)
+            // console.log("blue: "+blue)
         })
         if(validGame){
             totalGameSum+=currentGame
             validGame = false
         }
-        console.log("currentGame: "+currentGame)
-        console.log("totalGame: "+totalGameSum)
+        // console.log("currentGame: "+currentGame)
         currentGame++;
     })
+    console.log("totalGame: "+totalGameSum)
 }

@@ -67,11 +67,11 @@ function determineMins(inputArr) {
                 }
                 i++; 
             }
-            console.log("red: "+red)
-            console.log("green: "+green)
-            console.log("blue: "+blue)
+            // console.log("red: "+red)
+            // console.log("green: "+green)
+            // console.log("blue: "+blue)
         })
         powerSum+=red*green*blue
-        console.log("powerSum: "+powerSum)
     })
+    console.log("powerSum: "+powerSum)
 }
