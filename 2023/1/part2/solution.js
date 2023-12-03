@@ -61,8 +61,8 @@ function parseAllDigits(str) {
     for(var i=0; i<digitList.length; i++) {
         var digit = digitList[i]
         var currentIndex = str.indexOf(digit);
+        console.log(currentIndex)
         while(currentIndex != -1) {
-            console.log(currentIndex)
             if(lowestDigit == -1) {
                 lowestIndex = currentIndex;
                 lowestDigit = returnDigitInt(digit);
