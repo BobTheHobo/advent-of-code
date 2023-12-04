@@ -52,25 +52,20 @@ function parse(input) {
         while(x < line.length) {
             var char = line[x]
             if(!isNaN(char) && char !== "."){
-                console.log("char: " + char)
                 if(isNum == false) { //indicates that this is first digit encountered 
                     if(checkForSymbol("first", x, y, map)) {
                         nearSymbol = true;
-                        console.log("first symbol")
                     }
-                }else if(x==line.length-1){
-                    console.log(char)
+                }else if(x==line.length-1){ //edge case: a digit occupies last space of a line
                     if(checkForSymbol("last", x, y, map)) {
                         nearSymbol = true;
                     }
                     numStr = numStr + char;
                     var num = numStr/1;
-                    console.log("num: ", num)
                     isNum = false;
-                    console.log("near symbol "+ nearSymbol)
                     if(nearSymbol) {
                         totalSum+=num;
-                        console.log("Total sum: " + totalSum)
+                        // console.log("Total sum: " + totalSum)
                         nearSymbol = false;
                     }
                 }else{
@@ -80,7 +75,6 @@ function parse(input) {
                 }
                 isNum = true;
                 numStr = numStr + char;
-                console.log("huh: " + numStr)
             }else{
                 if(isNum == true) { //indicates that this is the space after the last digit
                     if(checkForSymbol("last", x-1, y, map)) {
@@ -90,13 +84,12 @@ function parse(input) {
                     isNum = false;
                     if(nearSymbol) {
                         totalSum+=num;
-                        console.log("Total sum: " + totalSum)
+                        // console.log("Total sum: " + totalSum)
                         nearSymbol = false;
                     }
                 }
                 numStr = ""
             }
-            console.log("current num: " + num)
             x++;
         }
         y++;
