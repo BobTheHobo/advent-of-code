@@ -10,11 +10,12 @@ testCase = [
     "..592.....",
     "......755.",
     "...$.*....",
-    ".664.598.."
+    ".664.598..",
+    ".......*22"
 ]
 
-test(testCase)
-// main(inputToList())
+// test(testCase)
+main(inputToList())
 
 function test(input) {
     main(input)
@@ -35,7 +36,6 @@ function createMap(input) {
         map[y] = chars
         y++;
     }
-    console.log(map)
     return map;
 }
 
@@ -52,19 +52,41 @@ function parse(input) {
         while(x < line.length) {
             var char = line[x]
             if(!isNaN(char) && char !== "."){
+                console.log("char: " + char)
                 if(isNum == false) { //indicates that this is first digit encountered 
-                    nearSymbol = checkForSymbol("first", x, y, map);
+                    if(checkForSymbol("first", x, y, map)) {
+                        nearSymbol = true;
+                        console.log("first symbol")
+                    }
+                }else if(x==line.length-1){
+                    console.log(char)
+                    if(checkForSymbol("last", x, y, map)) {
+                        nearSymbol = true;
+                    }
+                    numStr = numStr + char;
+                    var num = numStr/1;
+                    console.log("num: ", num)
+                    isNum = false;
+                    console.log("near symbol "+ nearSymbol)
+                    if(nearSymbol) {
+                        totalSum+=num;
+                        console.log("Total sum: " + totalSum)
+                        nearSymbol = false;
+                    }
                 }else{
-                    nearSymbol = checkForSymbol("mid", x, y, map);
+                    if(checkForSymbol("mid", x, y, map)) {
+                        nearSymbol = true;
+                    }
                 }
                 isNum = true;
-                console.log("char: "+ char)
                 numStr = numStr + char;
+                console.log("huh: " + numStr)
             }else{
                 if(isNum == true) { //indicates that this is the space after the last digit
-                    nearSymbol = checkForSymbol("last", x, y, map);
+                    if(checkForSymbol("last", x-1, y, map)) {
+                        nearSymbol = true;
+                    }
                     var num = numStr/1;
-                    console.log("current num: " + num)
                     isNum = false;
                     if(nearSymbol) {
                         totalSum+=num;
@@ -74,10 +96,12 @@ function parse(input) {
                 }
                 numStr = ""
             }
+            console.log("current num: " + num)
             x++;
         }
         y++;
     };
+    console.log("Final sum: "+ totalSum)
 }
 
 function checkForSymbol(pos, x, y, map) {
@@ -88,59 +112,55 @@ function checkForSymbol(pos, x, y, map) {
     var nearSymbol = false;
     if(y>0){ 
         //check top
-        nearSymbol = isSymbol(map[y-1][x]) 
+        nearSymbol = isSymbol(map[y-1][x]) || nearSymbol;
         checkUpper = true;
     }
     if(y<map.length-1){
         //check bottom
-        nearSymbol = isSymbol(map[y+1][x])
+        nearSymbol = isSymbol(map[y+1][x]) || nearSymbol;
         checkLower = true;
     }
     if(x>0){
         //check left
-        nearSymbol = isSymbol(map[y][x-1]);
+        nearSymbol = isSymbol(map[y][x-1]) || nearSymbol;
         checkLeft = true;
     }
     if(x<map[y].length-1){
         //check right
-        nearSymbol = isSymbol(map[y][x+1]);
+        nearSymbol = isSymbol(map[y][x+1]) || nearSymbol;
         checkRight = true;
     }
-
-    switch(pos) {
-        case "first":
-            //also check top left and bot left
-            if(checkLeft){
-                if(checkUpper){
-                    nearSymbol = isSymbol(map[y-1][x-1])
-                }
-                if(checkLower){
-                    nearSymbol = isSymbol(map[y+1][x-1])
-                }
+    
+    if(pos == "first") {
+        //also check top left and bot left
+        if(checkLeft){
+            if(checkUpper){
+                nearSymbol = isSymbol(map[y-1][x-1]) || nearSymbol;
             }
-            break;
-        case "last":
-            //also check top right and bot right
-            if(checkRight){
-                if(checkUpper){
-                    nearSymbol = isSymbol(map[y-1][x+1])
-                }
-                if(checkLower){
-                    nearSymbol = isSymbol(map[y+1][x+1])
-                }
+            if(checkLower){
+                nearSymbol = isSymbol(map[y+1][x-1]) || nearSymbol;
             }
-            break;
-        case "mid":
-            break;
+        }
+    }else if(pos == "last") {
+        //also check top right and bot right
+        if(checkRight){
+            if(checkUpper){
+                nearSymbol = isSymbol(map[y-1][x+1]) || nearSymbol;
+            }
+            if(checkLower){
+                nearSymbol = isSymbol(map[y+1][x+1]) || nearSymbol;
+            }
+        }
     }
     return nearSymbol
 }
+    
 
 function isSymbol(char) {
     if(isNaN(char) && char!='.'){
-        console.log(char)
         return true;
     }
+    return false;
 }
 
 /*
