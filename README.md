@@ -12,4 +12,4 @@ Answers are not posted though they can be found by running the solution files.
 
 **Day 2**: Part 1 ✅ Part 2 ✅
 
-**Day 3**: Part 1 ✅ Part 2 ✅ 
+**Day 3**: Part 1 ✅ Part 2 ✅ (Both solutions are in Part 1 b/c of a problem) 
