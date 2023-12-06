@@ -1,5 +1,4 @@
-console.log("whtfoeiajodjfoj");
-const { inputToLine } = require("../../inputReader.js");
+const { inputToList } = require("../../inputReader.js");
 
 const testcase = [
     "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53",
@@ -10,8 +9,8 @@ const testcase = [
     "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11",
 ]
 
-// main(inputToLine());
-test(testcase);
+main(inputToList());
+// test(testcase);
 
 function test(input) {
     main(input);
@@ -23,12 +22,23 @@ function main(input){
 
 
 function parseInput(input) {
+    var totalSum = 0;
     input.forEach(line => {
         const nums = line.split(": ")[1].split(" | ");
         const winNums = nums[0].split(" ");
         const checkNums = nums[1].split(" ");
-        console.log("winNums: "+winNums+" checkNums: "+checkNums)
+        // console.log("winNums: "+winNums+" checkNums: "+checkNums)
+        var points = 0;
+        var wins = 0;
+        winNums.forEach(num => {
+            if(num!='' && checkNums.includes(num)) {
+                wins++;
+            }
+        })
+        // console.log("wins: "+wins);
+        points = wins == 0 ? 0 : 2**(wins-1)
+        // console.log(points);
+        totalSum+=points;
     })
+    console.log("Total sum: "+totalSum)
 }
-
-    
