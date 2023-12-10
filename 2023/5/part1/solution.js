@@ -1,4 +1,4 @@
-const { inputToString } = require("../../inputReader.js");
+const { inputToString, inputToList } = require("../../inputReader.js");
  
 const testCases = [
 	"seeds: 79 14 55 13",
@@ -47,6 +47,47 @@ function main(input) {
 }
 
 function parseMaps(input) {
+	var i = 0;
+	var seeds, seedToSoil, fertToWat, watToLig, ligToTemp, tempToHum, humToLoc;
+	while(i<input.length) {
+		const line = input[i]
+		if(i==0) { seeds = line.split(": ")[1]; }
+		switch(line) {
+			case "seed-to-soil map:":
+			break;
+			case "fertilizer-to-water map:":
+			break;
+			case "water-to-light map:":
+			break;
+			case "light-to-temperature map:":
+			break;
+			case "temperature-to-humidity map:":
+			break;
+			case "humidity-to-location map:":
+			break;
+		}
+		console.log(seeds);
+		i++;
+	}
+}	
+
+function separateMaps(matchline) {
+	switch(matchline) {
+		case "seed-to-soil map:":
+			break;
+		case "fertilizer-to-water map:":
+			break;
+		case "water-to-light map:":
+			break;
+		case "light-to-temperature map:":
+			break;
+		case "temperature-to-humidity map:":
+			break;
+		case "humidity-to-location map:":
+			break;
+	}
+}
+function parseMapsByString(input) {
 	const categories = inputToString().split("\n\n") 
 	const seeds = categories[0].split(": ")[1].split(" ");
 	const seedToSoil = categories[1].split(":\n")[1].split(" "); 
