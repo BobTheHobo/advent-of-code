@@ -48,28 +48,36 @@ function main(input) {
 
 function parseMaps(input) {
 	var i = 0;
-	var seeds, seedToSoil, fertToWat, watToLig, ligToTemp, tempToHum, humToLoc;
+	var seeds;
+	var maps = []
+	var mapnum = -1;
+	var curNums = [];
 	while(i<input.length) {
 		const line = input[i]
-		if(i==0) { seeds = line.split(": ")[1]; }
-		switch(line) {
-			case "seed-to-soil map:":
-			break;
-			case "fertilizer-to-water map:":
-			break;
-			case "water-to-light map:":
-			break;
-			case "light-to-temperature map:":
-			break;
-			case "temperature-to-humidity map:":
-			break;
-			case "humidity-to-location map:":
-			break;
+		const firstChar = line.charAt(0);
+		if(i==0) {
+			seeds = line.split(": ")[1] 
+			i+=2;
+		} else if(isNaN(firstChar) && firstChar !== '' && firstChar !== '\n') {
+			mapnum++;
+			maps[mapnum] = curNums;
+			curNums = [];
+			console.log("uh oh")
+		} else if(!isNaN(firstChar) && firstChar!=='') {
+			var split = line.split(" ");
+			curNums = curNums.concat(split);
+			console.log(maps);
 		}
-		console.log(seeds);
 		i++;
 	}
+	console.log(maps);
 }	
+
+function determineLoc(seeds, maps) {
+	var smallestLocation = 100;
+	seeds.forEach(seed => {
+	}
+}
 
 function separateMaps(matchline) {
 	switch(matchline) {
@@ -84,17 +92,5 @@ function separateMaps(matchline) {
 		case "temperature-to-humidity map:":
 			break;
 		case "humidity-to-location map:":
-			break;
 	}
 }
-function parseMapsByString(input) {
-	const categories = inputToString().split("\n\n") 
-	const seeds = categories[0].split(": ")[1].split(" ");
-	const seedToSoil = categories[1].split(":\n")[1].split(" "); 
-	const soilToFertilizer = categories[2].split(":\n")[1].split(" "); 
-	const fertilizerToWater = categories[3].split(":\n")[1].split(" "); 
-	const waterToLIght = categories[4].split(":\n")[1].split(" "); 
-	const lightToTemp = categories[5].split(":\n")[1].split(" "); 
-	const humidityToLoc = categories[6].split(":\n")[1].split(" "); 
-	console.log(humidityToLoc);
-}	
