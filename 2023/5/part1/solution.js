@@ -43,7 +43,8 @@ function test(input) {
 }
 
 function main(input) {
-	parseMaps(input);
+	var maps = parseMaps(input);
+	createFullMap(maps)	
 }
 
 function parseMaps(input) {
@@ -62,21 +63,44 @@ function parseMaps(input) {
 			mapnum++;
 			maps[mapnum] = curNums;
 			curNums = [];
-			console.log("uh oh")
 		} else if(!isNaN(firstChar) && firstChar!=='') {
 			var split = line.split(" ");
 			curNums = curNums.concat(split);
-			console.log(maps);
 		}
 		i++;
 	}
-	console.log(maps);
+	// console.log(maps);
+	return maps;
 }	
 
 function determineLoc(seeds, maps) {
 	var smallestLocation = 100;
 	seeds.forEach(seed => {
-	}
+		
+	})
+}
+
+function createFullMap(maps) {
+	maps.forEach(map => {
+		var i=0;
+		var destBegin = 0;
+		var destEnd = 0;
+		var sourceBegin = 0;
+		var sourceEnd = 0;
+		var range = 0;
+		while(i<map.length) {
+			var remain = i%3; 
+			if(remain === 1) { //1st number
+					range = map[i+2];		
+			}else if(remain ===2) { //2nd number
+				
+			}else{ //3rd number
+
+			}
+			i++;
+			console.log(range)
+		}
+	})
 }
 
 function separateMaps(matchline) {
