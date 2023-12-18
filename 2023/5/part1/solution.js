@@ -43,13 +43,12 @@ function test(input) {
 }
 
 function main(input) {
-	var maps = parseMaps(input);
-	createFullMap(maps)	
+	evaluate(input);
 }
 
 function parseMaps(input) {
 	var i = 0;
-	var seeds;
+	var seeds = []
 	var maps = []
 	var mapnum = -1;
 	var curNums = [];
@@ -57,7 +56,8 @@ function parseMaps(input) {
 		const line = input[i]
 		const firstChar = line.charAt(0);
 		if(i==0) {
-			seeds = line.split(": ")[1] 
+			seeds = line.split(": ")[1].split(" ")
+			console.log(typeof(seeds))
 			i+=2;
 		} else if(isNaN(firstChar) && firstChar !== '' && firstChar !== '\n') {
 			mapnum++;
@@ -70,17 +70,11 @@ function parseMaps(input) {
 		i++;
 	}
 	// console.log(maps);
-	return maps;
+	return [maps, seeds];
 }	
 
-function determineLoc(seeds, maps) {
-	var smallestLocation = 100;
-	seeds.forEach(seed => {
-		
-	})
-}
-
 function createFullMap(maps) {
+	var instructMap = [];
 	maps.forEach(map => {
 		var i=0;
 		var destBegin = 0;
@@ -90,31 +84,47 @@ function createFullMap(maps) {
 		var range = 0;
 		while(i<map.length) {
 			var remain = i%3; 
-			if(remain === 1) { //1st number
-					range = map[i+2];		
-			}else if(remain ===2) { //2nd number
-				
+			if(remain === 0) { //1st number
+				range = map[i+2] - 1;		
+				destBegin = map[i];
+				destEnd = +destBegin + +range;
+			}else if(remain ===1) { //2nd number
+				sourceBegin = map[i]
+				sourceEnd = +sourceBegin + +range;	
 			}else{ //3rd number
-
+				// console.log("range: "+range)
+				// console.log("destBegin: "+destBegin+", "+destEnd)
+				// console.log("sourceBegin: "+sourceBegin+", "+sourceEnd)
+				var shift = destBegin-sourceBegin
+				// console.log("shift "+shift)
+				var instruction = [Number(sourceBegin), Number(sourceEnd), Number(shift)]
+				instructMap.push(instruction)
 			}
 			i++;
-			console.log(range)
 		}
+		// console.log(instructMap);
+		return instructMap
 	})
 }
 
-function separateMaps(matchline) {
-	switch(matchline) {
-		case "seed-to-soil map:":
-			break;
-		case "fertilizer-to-water map:":
-			break;
-		case "water-to-light map:":
-			break;
-		case "light-to-temperature map:":
-			break;
-		case "temperature-to-humidity map:":
-			break;
-		case "humidity-to-location map:":
-	}
+function evaluate(input) {
+	var result = parseMaps(input);
+	var maps = result[0]
+	var seeds = result[1]
+	console.log(maps)
+	console.log(seeds);
+	var instructMap = createFullMap(maps)	
+	var lowestLoc
+	seeds.forEach(seed => {
+		var loc = seed;
+		maps.forEach(map => {	
+			var begin = map[0]
+			var end = map[1]
+			var shift = map[2]
+			if(seed <= end && seed >= begin){
+				loc+=shift	
+			}
+		})
+		console.log("seed: "+seed);
+	})
 }
