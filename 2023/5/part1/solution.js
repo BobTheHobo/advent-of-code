@@ -36,8 +36,8 @@ const testCases = [
 	"56 93 4"
 ]
 
-// main(inputToList());
-test(testCases);
+main(inputToList());
+// test(testCases);
 function test(input) {
 	main(input);
 }
@@ -50,30 +50,28 @@ function parseMaps(input) {
 	var i = 0;
 	var seeds = []
 	var maps = []
-	var mapnum = -1;
+	var mapnum = 0;
 	var curNums = [];
 	while(i<input.length) {
 		const line = input[i]
 		const firstChar = line.charAt(0);
 		if(i==0) {
 			seeds = line.split(": ")[1].split(" ")
-			console.log(typeof(seeds))
 			i+=2;
 		} else if(isNaN(firstChar) && firstChar !== '' && firstChar !== '\n') {
 			mapnum++;
-			maps[mapnum] = curNums;
 			curNums = [];
 		} else if(!isNaN(firstChar) && firstChar!=='') {
 			var split = line.split(" ");
 			curNums = curNums.concat(split);
+			maps[mapnum] = curNums;
 		}
 		i++;
 	}
-	// console.log(maps);
 	return [maps, seeds];
 }	
 
-function createFullMap(maps) {
+function createFullMap(maps, seeds, callback) {
 	var instructMap = [];
 	maps.forEach(map => {
 		var i=0;
@@ -82,6 +80,7 @@ function createFullMap(maps) {
 		var sourceBegin = 0;
 		var sourceEnd = 0;
 		var range = 0;
+		var insideArray = []
 		while(i<map.length) {
 			var remain = i%3; 
 			if(remain === 0) { //1st number
@@ -98,33 +97,62 @@ function createFullMap(maps) {
 				var shift = destBegin-sourceBegin
 				// console.log("shift "+shift)
 				var instruction = [Number(sourceBegin), Number(sourceEnd), Number(shift)]
-				instructMap.push(instruction)
+				insideArray.push(instruction)
 			}
 			i++;
 		}
-		// console.log(instructMap);
-		return instructMap
+		instructMap.push(insideArray)
 	})
+	// console.log(instructMap);
+	callback(instructMap, seeds)
 }
 
 function evaluate(input) {
 	var result = parseMaps(input);
 	var maps = result[0]
 	var seeds = result[1]
-	console.log(maps)
-	console.log(seeds);
-	var instructMap = createFullMap(maps)	
-	var lowestLoc
+	// console.log(maps)
+	// console.log(seeds);
+	var instructMap = createFullMap(maps, seeds, findLowestLoc)	
+}
+
+function findLowestLoc(instructMap, seeds){
+	var lowestLoc;
+	var first = true;
 	seeds.forEach(seed => {
-		var loc = seed;
-		maps.forEach(map => {	
-			var begin = map[0]
-			var end = map[1]
-			var shift = map[2]
-			if(seed <= end && seed >= begin){
-				loc+=shift	
+		var loc = Number(seed);
+		instructMap.forEach(map => {	
+			var next = false;
+			for(var i=0; i<map.length; i++) {
+				var indivMap = map[i]
+				var j = 0;
+				while(j!==-1 && j < indivMap.length) {
+					var begin = indivMap[j]
+					var shift = indivMap[j+2]
+					var end = indivMap[j+1]
+					if(loc <= end && loc >= begin){
+						loc = loc + Number(shift)
+						next = true;
+					}
+					j+=3;
+				}
+				if(next === true){
+					break;
+				}
+			}
+			if(next === true){
+				next = false;
+				return;
 			}
 		})
-		console.log("seed: "+seed);
+		console.log("Final seed loc: "+loc);
+		if(first){
+			lowestLoc = loc
+			first = false;
+		}
+		else if(loc < lowestLoc){
+			lowestLoc = loc;
+		}
 	})
+	console.log("Lowest loc: "+lowestLoc);
 }
