@@ -35,17 +35,30 @@ function determineStrength(input) {
 	input.forEach(line => {
 		var result = line.split(" ")
 		var hand = result[0] 
+		var sortedHand = hand.sort()
 		var bid = result[1] 
 		console.log(hand)
 		console.log(bid)
-		for(var i=0; i<hand.length; i++) {
-			var card1 = hand[0]
-			var fullHand = Array(5).fill(card1).join("")
-			if(hand === fullHand) {
-				fullhands.push(result)
-			}
-		}
+		checkFullHand(hand)
+		checkFourHand(sortedHand)
 	})
+}
+
+function checkFullHand(hand){
+	var card1 = hand[0]
+	var fullHand = Array(5).fill(card1).join("")
+	if(hand === fullHand) {
+		fullhands.push(result)
+	}
+}
+
+function checkFourHand(sortedHand){
+	var card1 = hand[0]
+	var card5 = hand[5]
+	// AAAAJ
+	var option1 = Array(4).fill(card1).push(card5).join()
+	// AJJJJ
+	var option2 = [card1].push(Array(4).fill(card5)).join()
 }
 
 function compareHands(hand1, hand2) {
