@@ -34,12 +34,14 @@ function main(input) {
 }
 
 function determineStrength(input) {
+	console.log(input.length)
 	for(var i=0; i<input.length; i++) {
 		var line = input[i];
 		var result = line.split(" ")
 		var hand = result[0].split("") 
 		var sortedHand = hand.sort()
 		var bid = result[1] 
+		// console.log(i)
 		if(checkFullHand(sortedHand)){
 			fullhands.push(line)
 			continue;
@@ -65,7 +67,6 @@ function determineStrength(input) {
 			continue;
 		}
 		highcardhands.push(line)
-		i++
 	}
 	calculateWinnings()
 }
@@ -146,28 +147,27 @@ function checkOnePairHand(sortedHand){
 	return false;
 }
 
-function checkHighHand(hand){
-	addToArray(hand, arr)
-}
-
 function compareHands(hand1, hand2) {
 	for(var i=0; i<hand1.length; i++) {
 		h1c = hand1[i];
 		h2c = hand2[i];
 		if(h1c === h2c){
-			return 0;
+			if(i === 4) {
+				return 0
+			}
+			continue
 		}
 		else if(!isNaN(h1c) && !isNaN(h2c)){
-			if(Number(h1c) > Number(h2c)){ //lower card numbers are better than higher card nums 
+			if(Number(h1c) < Number(h2c)){ //lower card numbers are better than higher card nums 
 				return 1;
 			}
 			return -1;
 		}
 		else if(isNaN(h1c) && !isNaN(h2c)){
-			return 1			
+			return -1		
 		}
 		else if(!isNaN(h1c) && isNaN(h2c)){
-			return -1
+			return 1
 		}
 		else if(isNaN(h1c) && isNaN(h2c)){ //handle non-number cards
 			var pair = ["T","J","Q","K","A"] 
