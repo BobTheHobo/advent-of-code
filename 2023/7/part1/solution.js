@@ -5,12 +5,23 @@ const testCases = [
 	"T55J5 684",
 	"KK677 28",
 	"KTJJT 220",
-	"QQQJA 483"
+	"QQQJA 483",
+	"AAAAA 400",
+	"JTJJJ 300",
+	"JTJTJ 200"
 ]
 var totalCases 
+var fullhands = []
+var fourhands = []
+var fullhousehands = []
+var threehands = []
+var twopairhands = []
+var onepairhands = []
+var highcardhands = []
+var allhands = [fullhands, fourhands,fullhousehands,threehands,twopairhands,onepairhands,highcardhands]
 
-// main(inputToList())
-test(testCases)
+main(inputToList())
+// test(testCases)
 
 function test(input) {
 	main(input);
@@ -22,15 +33,6 @@ function main(input) {
 	// calculateWinnings()
 }
 
-var fullhands = []
-var fourhands = []
-var fullhousehands = []
-var threehands = []
-var twopairhands = []
-var onepairhands = []
-var highcardhands = []
-var allhands = [fullhands, fourhands,fullhousehands,threehands,twopairhands,onepairhands,highcardhands]
-
 function determineStrength(input) {
 	for(var i=0; i<input.length; i++) {
 		var line = input[i];
@@ -38,9 +40,7 @@ function determineStrength(input) {
 		var hand = result[0].split("") 
 		var sortedHand = hand.sort()
 		var bid = result[1] 
-		console.log(hand)
-		console.log(bid)
-		if(checkFullHand(hand)){
+		if(checkFullHand(sortedHand)){
 			fullhands.push(line)
 			continue;
 		} 
@@ -52,7 +52,7 @@ function determineStrength(input) {
 			fullhousehands.push(line)
 			continue;
 		}
-		if(checkThreehand(sortedHand)){
+		if(checkThreeHand(sortedHand)){
 			threehands.push(line)
 			continue;
 		}
@@ -64,10 +64,7 @@ function determineStrength(input) {
 			onepairhands.push(line)
 			continue;
 		}
-		if(checkHighHand(hand)){
-			highcardhands.push(line)
-			continue;
-		}
+		highcardhands.push(line)
 		i++
 	}
 	calculateWinnings()
@@ -75,29 +72,30 @@ function determineStrength(input) {
 
 function checkFullHand(hand){
 	var card1 = hand[0]
-	var fullHand = Array(5).fill(card1)
-	if(hand === fullHand) {
+	var strHand = hand.join("")
+	var fullHand = Array(5).fill(card1).join("")
+	if(strHand == fullHand) {
 		return true;
 	}
 	return false;
 }
 
 function checkFourHand(sortedHand){
-	var hand = sortedHand
+	var hand = sortedHand.join("")
 	var card1 = hand[0]
 	var card5 = hand[4]
 	// AAAAJ
 	var option1 = Array(4).fill(card1)
 	option1.push(card5)
+	var option1str = option1.join("")
 	// AJJJJ
 	var option2 = [card1].concat(Array(4).fill(card5))
+	var option2str = option2.join("")
 
-	if(sortedHand === option1) {
-		fourhands.push(option1)
+	if(hand === option1str) {
 		return true;
 	}
-	if(sortedHand === option2) {
-		fourhands.push(option2)
+	if(hand === option2str) {
 		return true;
 	}
 	return false;
@@ -106,11 +104,9 @@ function checkFourHand(sortedHand){
 function checkFullHouse(sortedHand){
 	const hand = sortedHand
 	if(hand[0] === hand[1] && hand[1] === hand[2] && hand[3] === hand[4]){
-		fullhousehands.push(hand)
 		return true;
 	}
 	if(hand[0] === hand[1] && hand[2] === hand[3] && hand[3] === hand[4]){
-		fullhousehands.push(hand)
 		return true;
 	}
 	return false;
@@ -119,11 +115,9 @@ function checkFullHouse(sortedHand){
 function checkThreeHand(sortedHand){
 	const hand = sortedHand
 	if(hand[0] === hand[1] && hand[1] === hand[2] && hand[3] !== hand[4]){
-		fullhousehands.push(hand)
 		return true;
 	}
 	if(hand[2] === hand[3] && hand[3] === hand[4] && hand[0] !== hand[1]){
-		fullhousehands.push(hand)
 		return true;
 	}
 	return false;
@@ -156,19 +150,6 @@ function checkHighHand(hand){
 	addToArray(hand, arr)
 }
 
-function addToArray(hand, arr){
-	if(arr.length == 0){
-		arr.push(hand);
-		return;
-	}
-	if(arr.length == 1){
-		if(arr[0] > hand){
-		//todo: finish this		
-		}
-		arr.push(hand)
-	}
-}
-
 function compareHands(hand1, hand2) {
 	for(var i=0; i<hand1.length; i++) {
 		h1c = hand1[i];
@@ -199,7 +180,7 @@ function compareHands(hand1, hand2) {
 					h2cval = i;	
 				}
 			}
-			if(h1cval > h2cval){
+			if(h1cval < h2cval){
 				return 1
 			}else{
 				return -1
@@ -212,13 +193,16 @@ function calculateWinnings(){
 	// var allhands = Array(1).fill(testCases) //line for testing purposes
 	var totalwinnings = 0;
 	var rank = totalCases;
-	console.log(rank)
 	allhands.forEach(handtype => {
-		for(var i=0; i<handtype.length; i++) {
-			var bid = handtype[i].split(" ")[1]		
-			totalwinnings+= (rank*bid)
+		var sortedHandtype = handtype.sort(compareHands)
+		console.log("sortedHandtype: "+sortedHandtype)
+		for(var i=0; i<sortedHandtype.length; i++) {
+			var hand = sortedHandtype[i].split(" ")[0]		
+			var bid = sortedHandtype[i].split(" ")[1]		
+			var gain = rank*bid
+			console.log("hand: "+hand+" rank: "+rank+" bid: "+bid+" total gain: "+gain)
+			totalwinnings+= (gain)
 			rank--;
-			console.log(totalwinnings)
 		}
 	})
 	console.log("Total winnings: "+totalwinnings)
