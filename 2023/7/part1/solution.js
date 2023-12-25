@@ -17,9 +17,9 @@ function test(input) {
 }
 
 function main(input) {
-	// determineStrength(input)
 	totalCases = input.length
-	calculateWinnings()
+	determineStrength(input)
+	// calculateWinnings()
 }
 
 var fullhands = []
@@ -35,39 +35,63 @@ function determineStrength(input) {
 	for(var i=0; i<input.length; i++) {
 		var line = input[i];
 		var result = line.split(" ")
-		var hand = result[0] 
+		var hand = result[0].split("") 
 		var sortedHand = hand.sort()
 		var bid = result[1] 
 		console.log(hand)
 		console.log(bid)
-		if(checkFullHand(hand)){ continue; } 
-		if(checkFourHand(sortedHand)){ continue; }
-		if(checkFullHouse(sortedHand)){ continue; }
-		if(checkThreehand(sortedHand)){ continue; }
-		if(checkTwoPairHand(sortedHand)){ continue; }
-		if(checkOnePairHand(sortedHand)){ continue; }
-		checkHighHand(hand)
+		if(checkFullHand(hand)){
+			fullhands.push(line)
+			continue;
+		} 
+		if(checkFourHand(sortedHand)){
+			fourhands.push(line)
+			continue;
+		}
+		if(checkFullHouse(sortedHand)){
+			fullhousehands.push(line)
+			continue;
+		}
+		if(checkThreehand(sortedHand)){
+			threehands.push(line)
+			continue;
+		}
+		if(checkTwoPairHand(sortedHand)){
+			twopairhands.push(line)
+			continue;
+		}
+		if(checkOnePairHand(sortedHand)){
+			onepairhands.push(line)
+			continue;
+		}
+		if(checkHighHand(hand)){
+			highcardhands.push(line)
+			continue;
+		}
 		i++
-	})
+	}
+	calculateWinnings()
 }
 
 function checkFullHand(hand){
 	var card1 = hand[0]
-	var fullHand = Array(5).fill(card1).join("")
+	var fullHand = Array(5).fill(card1)
 	if(hand === fullHand) {
-		fullhands.push(result)
 		return true;
 	}
 	return false;
 }
 
 function checkFourHand(sortedHand){
+	var hand = sortedHand
 	var card1 = hand[0]
-	var card5 = hand[5]
+	var card5 = hand[4]
 	// AAAAJ
-	var option1 = Array(4).fill(card1).push(card5).join()
+	var option1 = Array(4).fill(card1)
+	option1.push(card5)
 	// AJJJJ
-	var option2 = [card1].push(Array(4).fill(card5)).join()
+	var option2 = [card1].concat(Array(4).fill(card5))
+
 	if(sortedHand === option1) {
 		fourhands.push(option1)
 		return true;
