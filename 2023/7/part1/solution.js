@@ -19,9 +19,11 @@ var twopairhands = []
 var onepairhands = []
 var highcardhands = []
 var allhands = [fullhands, fourhands,fullhousehands,threehands,twopairhands,onepairhands,highcardhands]
+var line
+var linetoadd
 
-main(inputToList())
-// test(testCases)
+// main(inputToList())
+test(testCases)
 
 function test(input) {
 	main(input);
@@ -36,37 +38,37 @@ function main(input) {
 function determineStrength(input) {
 	console.log(input.length)
 	for(var i=0; i<input.length; i++) {
-		var line = input[i];
+		line = input[i];
 		var result = line.split(" ")
 		var hand = result[0].split("") 
 		var sortedHand = hand.sort()
 		var bid = result[1] 
 		// console.log(i)
 		if(checkFullHand(sortedHand)){
-			fullhands.push(line)
+			fullhands.push(linetoadd)
 			continue;
 		} 
 		if(checkFourHand(sortedHand)){
-			fourhands.push(line)
+			fourhands.push(linetoadd)
 			continue;
 		}
 		if(checkFullHouse(sortedHand)){
-			fullhousehands.push(line)
+			fullhousehands.push(linetoadd)
 			continue;
 		}
 		if(checkThreeHand(sortedHand)){
-			threehands.push(line)
+			threehands.push(linetoadd)
 			continue;
 		}
 		if(checkTwoPairHand(sortedHand)){
-			twopairhands.push(line)
+			twopairhands.push(linetoadd)
 			continue;
 		}
 		if(checkOnePairHand(sortedHand)){
-			onepairhands.push(line)
+			onepairhands.push(linetoadd)
 			continue;
 		}
-		highcardhands.push(line)
+		highcardhands.push(linetoadd)
 	}
 	calculateWinnings()
 }
@@ -76,6 +78,7 @@ function checkFullHand(hand){
 	var strHand = hand.join("")
 	var fullHand = Array(5).fill(card1).join("")
 	if(strHand == fullHand) {
+		linetoadd = line.split(" ").concat(fullHand).join(" ")
 		return true;
 	}
 	return false;
@@ -94,9 +97,13 @@ function checkFourHand(sortedHand){
 	var option2str = option2.join("")
 
 	if(hand === option1str) {
+		linetoadd = line.split(" ").concat(option1str).join(" ")
 		return true;
 	}
 	if(hand === option2str) {
+		var append = Array(4).fill(card5)
+		append.push(card1)
+		linetoadd = line.split(" ").concat(append.join("")).join(" ")	
 		return true;
 	}
 	return false;
@@ -105,9 +112,12 @@ function checkFourHand(sortedHand){
 function checkFullHouse(sortedHand){
 	const hand = sortedHand
 	if(hand[0] === hand[1] && hand[1] === hand[2] && hand[3] === hand[4]){
+		linetoadd = line.split(" ").concat(hand).join(" ")
 		return true;
 	}
 	if(hand[0] === hand[1] && hand[2] === hand[3] && hand[3] === hand[4]){
+		var appendstr = Array(3).fill(hand[2]).concat(Array(2).fill(hand[0])).join("")
+		linetoadd = line.split(" ").concat(appendstr).join(" ")
 		return true;
 	}
 	return false;
@@ -115,10 +125,23 @@ function checkFullHouse(sortedHand){
 
 function checkThreeHand(sortedHand){
 	const hand = sortedHand
+	var append
 	if(hand[0] === hand[1] && hand[1] === hand[2] && hand[3] !== hand[4]){
+		if(compareSuits(hand[3], hand[4]) > 0){
+			append = Array(3).fill(hand[0]).concat([hand[3], hand[4]]).join("")	
+		}else{
+			append = Array(3).fill(hand[0]).concat([hand[4], hand[3]]).join("")	
+		}
+		linetoadd = line.split(" ").concat(append).join(" ")
 		return true;
 	}
 	if(hand[2] === hand[3] && hand[3] === hand[4] && hand[0] !== hand[1]){
+		if(compareSuits(hand[0], hand[1]) > 0){
+			append = Array(3).fill(hand[2]).concat([hand[0], hand[1]]).join("")	
+		}else{
+			append = Array(3).fill(hand[2]).concat([hand[1], hand[0]]).join("")	
+		}
+		linetoadd = line.split(" ").concat(append).join(" ")
 		return true;
 	}
 	return false;
@@ -147,44 +170,57 @@ function checkOnePairHand(sortedHand){
 	return false;
 }
 
-function compareHands(hand1, hand2) {
+function compareHands(hand1unsorted, hand2unsorted) {
+	// var hand1 = hand1unsorted.split("").sort().join("")
+	// var hand2 = hand2unsorted.split("").sort().join("")
+	var hand1 = hand1unsorted
+	var hand2 = hand2unsorted
+
 	for(var i=0; i<hand1.length; i++) {
 		h1c = hand1[i];
 		h2c = hand2[i];
-		if(h1c === h2c){
+		var diff = compareSuits(h1c, h2c)
+		if(diff === 0){
 			if(i === 4) {
 				return 0
 			}
 			continue
 		}
-		else if(!isNaN(h1c) && !isNaN(h2c)){
-			if(Number(h1c) < Number(h2c)){ //lower card numbers are better than higher card nums 
-				return 1;
+		return diff
+	}
+}
+
+function compareSuits(s1,s2){
+	if(s1 === s2){
+		return 0
+	}
+	else if(!isNaN(s1) && !isNaN(s2)){
+		if(Number(s1) < Number(s2)){
+			return 1;
+		}
+		return -1;
+	}
+	else if(isNaN(s1) && !isNaN(s2)){
+		return -1		
+	}
+	else if(!isNaN(s1) && isNaN(s2)){
+		return 1
+	}
+	else if(isNaN(s1) && isNaN(s2)){ //handle non-number cards
+		var pair = ["T","J","Q","K","A"] 
+		var n1, n2
+		for(var i=0; i<pair.length; i++) {
+			if(n1 === pair[i]){
+				n1 = i;
 			}
-			return -1;
+			if(n2 === pair[i]){
+				n2 = i;	
+			}
 		}
-		else if(isNaN(h1c) && !isNaN(h2c)){
-			return -1		
-		}
-		else if(!isNaN(h1c) && isNaN(h2c)){
+		if(n1 < n2){
 			return 1
-		}
-		else if(isNaN(h1c) && isNaN(h2c)){ //handle non-number cards
-			var pair = ["T","J","Q","K","A"] 
-			var h1cval, h2cval
-			for(var i=0; i<pair.length; i++) {
-				if(h1c === pair[i]){
-					h1cval = i;
-				}
-				if(h2c === pair[i]){
-					h2cval = i;	
-				}
-			}
-			if(h1cval < h2cval){
-				return 1
-			}else{
-				return -1
-			}
+		}else{
+			return -1
 		}
 	}
 }
